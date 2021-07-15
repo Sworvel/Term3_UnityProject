@@ -13,6 +13,10 @@ public class CanvasManager : MonoBehaviour
 
     [Header("Menus")]
     public GameObject PauseMenu;
+    public GameObject DeathMenu;
+
+    [Header("EndText")]
+    public Transform endText;
 
     // Start is called before the first frame update
     void Start()
@@ -26,14 +30,21 @@ public class CanvasManager : MonoBehaviour
             ResumeButton.onClick.AddListener(() => ReturnToGame());
         }
         PauseMenu.SetActive(false);
+        DeathMenu.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        endText.transform.LookAt(Camera.main.transform);
+
+        if (Input.GetButtonDown("Cancel"))
+        {
+            ShowPauseMenu();
+        }
     }
 
+    //Show Menu on Collision
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
@@ -42,19 +53,22 @@ public class CanvasManager : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        ReturnToGame();
-    }
-
     void ShowPauseMenu()
     {
         PauseMenu.SetActive(true);
+        Time.timeScale = 0;
     }
 
     void ReturnToGame()
     {
         PauseMenu.SetActive(false);
+        Time.timeScale = 1;
+    }
+
+    public void ShowDeathMenu()
+    {
+        DeathMenu.SetActive(true);
+        //Time.timeScale = 0.5f;
     }
 
     public void QuitGame()

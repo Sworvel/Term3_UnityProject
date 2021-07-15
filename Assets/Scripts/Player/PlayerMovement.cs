@@ -1,28 +1,111 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public CharacterController controller;
+    CharacterController controller;
 
-    public float speed = 12f;
-    public float gravity = -9.81f;
+    [Header("Player Settings")]
+    [Space(2)]
+    [Tooltip("Speed Between 1 and 12")]
+    [Range(1.0f, 12.0f)]
+    public float speed;
+    public float jumpSpeed;
+    public float rotationSpeed;
+    public float gravity;
 
-    Vector3 velocity;
-    
+    Vector3 moveDirection;
+
+    enum ControllerType { SimpleMove, Move };
+    [SerializeField] ControllerType type;
+
+
+    void Start()
+    {
+        try
+        {
+            controller = GetComponent<CharacterController>();
+
+            controller.minMoveDistance = 0.0f;
+
+            if(speed <= 0)
+            {
+                speed = 10.0f;
+                Debug.Log("Speed not set on speed, defaulting to 10.");
+            }
+
+            if (jumpSpeed <= 0)
+            {
+                jumpSpeed = 6.0f;
+                Debug.Log("Jump Speed not set on jump speed, defaulting to 6.");
+            }
+
+            if (rotationSpeed <= 0)
+            {
+                rotationSpeed = 10.0f;
+                Debug.Log("Rotating Speed not set on rotation speed, defaulting to 10.");
+            }
+
+            if (gravity <= 0)
+            {
+                gravity = 9.81f;
+                Debug.Log("Gravity not set on " + name + "defaulting to 9.81.");
+            }
+
+            moveDirection = Vector3.zero;
+        }
+        catch (NullReferenceException e)
+        {
+            Debug.LogWarning(e.Message);
+        }
+        catch (UnassignedReferenceException e)
+        {
+            Debug.LogWarning(e.Message);
+        }
+        finally
+        {
+            Debug.LogWarning("Always get called");
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+        switch (type)
+        {
+            case ControllerType.SimpleMove:
 
-        Vector3 move = transform.right * x + transform.forward * z;
+                controller.SimpleMove(transform.forward * Input.GetAxis("Vertical") * speed);
 
-        controller.Move(move * speed * Time.deltaTime);
+                break;
 
-        velocity.y += gravity * Time.deltaTime;
+            case ControllerType.Move:
 
-        controller.Move(velocity * Time.deltaTime);
+                if(controller.isGrounded)
+                {
+                    moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                    
+                    moveDirection *= speed;
+                    
+                    moveDirection = transform.TransformDirection(moveDirection);
+
+                    if (Input.GetButtonDown("Jump"))
+                        moveDirection.y = jumpSpeed;
+                }
+
+                moveDirection.y -= gravity * Time.deltaTime;
+
+                controller.Move(moveDirection * Time.deltaTime);
+
+                break;
+        }
+    }
+
+    [ContextMenu("Reset Stats")]
+    void ResetStats()
+    {
+        speed = 6.0f;
     }
 }

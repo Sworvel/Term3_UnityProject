@@ -1,30 +1,52 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[AddComponentMenu("Camera-Control/Mouse Look")]
 public class MouseLook : MonoBehaviour
 {
-    public float mouseSensitivity = 100f;
+    public enum RotationAxes { MouseXAndY = 0, MouseX = 1, MouseY = 2 }
+    public RotationAxes axes = RotationAxes.MouseXAndY;
+    public float sensitivityX = 15f;
+    public float sensitivityY = 15f;
 
-    public Transform player;
+    public float minimumX = -360f;
+    public float maximumX = 360f;
 
-    float xRotation = 0f;
+    public float minimumY = -60f;
+    public float maximumY = 60f;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //Cursor.lockState = CursorLockMode.Locked;
-    }
+    float rotationY = 0f;
 
     void Update()
-    { 
-         float mouseX= Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+    {
+        if (Time.timeScale == 1)
+        {
+            if (axes == RotationAxes.MouseXAndY)
+            {
+                float rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
 
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, 0f, 0f);
+                rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+                rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
 
-        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        player.Rotate(Vector3.up * mouseX);
+                transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
+            }
+            else if (axes == RotationAxes.MouseX)
+            {
+                transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivityX, 0);
+            }
+            else
+            {
+                rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+                rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
+
+                transform.localEulerAngles = new Vector3(-rotationY, transform.localEulerAngles.y, 0);
+            }
+        }
+    }
+
+    void Start()
+    {
+        if (GetComponent<Rigidbody>())
+            GetComponent<Rigidbody>().freezeRotation = true;
     }
 }

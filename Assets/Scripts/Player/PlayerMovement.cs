@@ -51,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
             if (gravity <= 0)
             {
                 gravity = 9.81f;
-                Debug.Log("Gravity not set on " + name + "defaulting to 9.81.");
+                Debug.Log("Gravity not set on gravity, defaulting to 9.81.");
             }
 
             moveDirection = Vector3.zero;

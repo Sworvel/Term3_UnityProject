@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class CanvasManager : MonoBehaviour
 {
     [Header("Buttons")]
     public Button QuitButton;
     public Button ResumeButton;
+    public Button lvlOneButton;
+    public Button lvlTwoButton;
 
     [Header("Menus")]
     public GameObject PauseMenu;
-    public GameObject DeathMenu;
+    public GameObject lvlSelect;
 
     [Header("EndText")]
     public Transform endText;
@@ -23,25 +24,34 @@ public class CanvasManager : MonoBehaviour
     {
         if (QuitButton)
         {
-            QuitButton.onClick.AddListener(() => QuitGame());
+            QuitButton.onClick.AddListener(() => GameManager.instance.QuitGame());
         }
         if (ResumeButton)
         {
             ResumeButton.onClick.AddListener(() => ReturnToGame());
         }
-        PauseMenu.SetActive(false);
-        DeathMenu.SetActive(false);
+        if (lvlOneButton)
+        {
+            lvlOneButton.onClick.AddListener(() => GameManager.instance.StartLevelOne());
+        }
+        if (lvlTwoButton)
+        {
+            lvlTwoButton.onClick.AddListener(() => GameManager.instance.StartLevelTwo());
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        endText.transform.LookAt(Camera.main.transform);
+        if (endText)
+        {
+            endText.transform.LookAt(Camera.main.transform);
+        }
 
-        if (Input.GetButtonDown("Cancel"))
+        /*if (Input.GetButtonDown("Cancel"))
         {
             ShowPauseMenu();
-        }
+        }*/
     }
 
     //Show Menu on Collision
@@ -63,20 +73,5 @@ public class CanvasManager : MonoBehaviour
     {
         PauseMenu.SetActive(false);
         Time.timeScale = 1;
-    }
-
-    public void ShowDeathMenu()
-    {
-        DeathMenu.SetActive(true);
-        //Time.timeScale = 0.5f;
-    }
-
-    public void QuitGame()
-    {
-#if UNITY_EDITOR
-        EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
     }
 }

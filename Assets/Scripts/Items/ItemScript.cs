@@ -7,16 +7,20 @@ public class ItemScript : MonoBehaviour
     MeshRenderer mr;
     Animator anim;
     PlayerInv playerInv;
+    SphereCollider sc;
 
     public enum ItemType
     {
         Key,
         Chest,
+        Ball,
         Axe,
         Tree,
     }
 
     public ItemType currentItem;
+
+    public bool chestOpened = false;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +28,7 @@ public class ItemScript : MonoBehaviour
         mr = GetComponentInParent<MeshRenderer>();
         anim = GetComponent<Animator>();
         playerInv = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInv>();
+        sc = GetComponentInChildren<SphereCollider>();
     }
 
     // Update is called once per frame
@@ -39,37 +44,39 @@ public class ItemScript : MonoBehaviour
             switch (currentItem)
             {
                 case ItemType.Key:
-                    playerInv.hasKey = true;
+                    playerInv.pickupItem();
+                    destroymr();
+                    break;
+
+                case ItemType.Ball:
+                    playerInv.pickupItem();
                     destroymr();
                     break;
 
                 case ItemType.Chest:
                     if (other.gameObject.GetComponent<PlayerInv>())
                     {
-                        if (anim.GetBool("isOpen") == false && other.gameObject.GetComponent<PlayerInv>().hasKey == true)
+                        if (anim.GetBool("isOpen") == false)
                         {
                             anim.SetTrigger("playerOpened");
+                            Destroy(GetComponent<BoxCollider>());
                         }
                         if(anim.GetBool("isOpen") == true)
                         {
-                            
+                            chestOpened = true;
                         }
                     }
                     break;
 
                 case ItemType.Axe:
-                    playerInv.hasKey = false;
-                    playerInv.hasAxe = true;
+                    playerInv.pickupItem();
                     destroymr();
                     break;
 
                 case ItemType.Tree:
                     if (other.gameObject.GetComponent<PlayerInv>())
                     {
-                        if (other.gameObject.GetComponent<PlayerInv>().hasAxe == true)
-                        {
 
-                        }
                     }
                     break;
             }

@@ -21,6 +21,16 @@ public class PlayerMovement : MonoBehaviour
     enum ControllerType { SimpleMove, Move };
     [SerializeField] ControllerType type;
 
+    [Header("Weapon Settings")]
+    // Handle weapon shooting
+    public float projectileForce;
+    public Rigidbody projectilePrefab;
+    public Transform projectileSpawnPoint;
+    public GameObject fire;
+
+    [Header("Raycast Settings")]
+    public Transform thingToLookFrom;
+    public float lookAtDistance;
 
     void Start()
     {
@@ -55,6 +65,18 @@ public class PlayerMovement : MonoBehaviour
             }
 
             moveDirection = Vector3.zero;
+
+            if (projectileForce <= 0)
+            {
+                projectileForce = 10.0f;
+                Debug.Log("ProjectileForce not set on projectile force defaulting to " + projectileForce);
+            }
+
+            if (!projectilePrefab)
+                Debug.LogWarning("Missing projectilePrefab on " + name);
+
+            if (!projectileSpawnPoint)
+                Debug.LogWarning("Missing projectileSpawnPoint on " + name);
         }
         catch (NullReferenceException e)
         {
@@ -101,7 +123,50 @@ public class PlayerMovement : MonoBehaviour
 
                 break;
         }
+
+        RaycastHit hit;
+
+        if (!thingToLookFrom)
+        {
+            Debug.DrawRay(transform.position, transform.forward * lookAtDistance, Color.red);
+
+            if (Physics.Raycast(transform.position, transform.forward, out hit, lookAtDistance))
+            {
+                Debug.Log("Raycast hit: " + hit.transform.name);
+            }
+        }
+        else
+        {
+            Debug.DrawRay(thingToLookFrom.transform.position, thingToLookFrom.transform.forward * lookAtDistance, Color.blue);
+
+            if (Physics.Raycast(thingToLookFrom.transform.position, thingToLookFrom.transform.forward, out hit, lookAtDistance))
+            {
+                if(hit.transform.name == "Minion" && Input.GetButtonDown("Fire1"))
+                {
+                    GameManager.instance.MinionDeath();
+                }
+            }
+        }
+
+
+        /*if (Input.GetButtonDown("Fire1"))
+        {
+            playerFire();
+        }*/
     }
+
+    /*public void playerFire()
+    {
+        if (projectileSpawnPoint && projectilePrefab)
+        {
+            Rigidbody temp = Instantiate(projectilePrefab, projectileSpawnPoint.position,
+                projectileSpawnPoint.rotation);
+
+            temp.AddForce(projectileSpawnPoint.forward * projectileForce, ForceMode.Force);
+
+            Destroy(temp.gameObject, 2.0f);
+        }
+    }*/
 
     [ContextMenu("Reset Stats")]
     void ResetStats()

@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
 
     static GameManager _instance = null;
 
+    GameObject minion;
+
     public static GameManager instance
     {
         get { return _instance; }
@@ -20,6 +22,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         this.fixedDeltaTime = Time.fixedDeltaTime;
+
+        minion = GameObject.FindGameObjectWithTag("Enemy");
 
         if (instance)
         {
@@ -63,9 +67,8 @@ public class GameManager : MonoBehaviour
 #endif
     }
 
-    //Item Funtions
-    public void hasKey()
+    public void MinionDeath()
     {
-
+        Destroy(minion);
     }
 }

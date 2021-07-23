@@ -39,6 +39,11 @@ public class Minion : MonoBehaviour
         {
             GameManager.instance.PlayerDeath();
         }
+
+        if(collision.gameObject.tag == "PlayerProjectile")
+        {
+            Destroy(transform.parent.gameObject);
+        }
     }
 
 }

@@ -24,9 +24,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Weapon Settings")]
     // Handle weapon shooting
     public float projectileForce;
-    public Rigidbody projectilePrefab;
+    public GameObject projectilePrefab;
     public Transform projectileSpawnPoint;
-    public GameObject fire;
 
     [Header("Raycast Settings")]
     public Transform thingToLookFrom;
@@ -69,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
             if (projectileForce <= 0)
             {
                 projectileForce = 10.0f;
-                Debug.Log("ProjectileForce not set on projectile force defaulting to " + projectileForce);
+                Debug.Log("ProjectileForce not set on projectilePrefab force defaulting to " + projectileForce);
             }
 
             if (!projectilePrefab)
@@ -124,7 +123,7 @@ public class PlayerMovement : MonoBehaviour
                 break;
         }
 
-        RaycastHit hit;
+       /* RaycastHit hit;
 
         if (!thingToLookFrom)
         {
@@ -146,27 +145,20 @@ public class PlayerMovement : MonoBehaviour
                     GameManager.instance.MinionDeath();
                 }
             }
-        }
-
-
-        /*if (Input.GetButtonDown("Fire1"))
-        {
-            playerFire();
         }*/
-    }
 
-    /*public void playerFire()
-    {
-        if (projectileSpawnPoint && projectilePrefab)
+        if (Input.GetButtonDown("Fire1"))
         {
-            Rigidbody temp = Instantiate(projectilePrefab, projectileSpawnPoint.position,
-                projectileSpawnPoint.rotation);
+            if (projectileSpawnPoint && projectilePrefab)
+            {
+                GameObject temp = Instantiate(projectilePrefab, projectileSpawnPoint.transform.position, projectileSpawnPoint.transform.rotation);
 
-            temp.AddForce(projectileSpawnPoint.forward * projectileForce, ForceMode.Force);
+                temp.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0, 0, projectileForce));
 
-            Destroy(temp.gameObject, 2.0f);
+                Destroy(temp.gameObject, 2.0f);
+            }
         }
-    }*/
+    }
 
     [ContextMenu("Reset Stats")]
     void ResetStats()

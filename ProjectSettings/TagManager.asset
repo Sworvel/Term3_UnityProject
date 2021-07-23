@@ -10,6 +10,7 @@ TagManager:
   - Key
   - Ball
   - Enemy
+  - PlayerProjectile
   layers:
   - Default
   - TransparentFX

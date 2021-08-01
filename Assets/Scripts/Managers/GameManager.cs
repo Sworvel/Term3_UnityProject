@@ -10,7 +10,12 @@ public class GameManager : MonoBehaviour
 
     static GameManager _instance = null;
 
-    GameObject minion;
+    GameObject enemy;
+    Animator playerAnim;
+
+    public bool hasKey = false, hasBall = false, hasAxe = false;
+
+    public int playerHealth;
 
     public static GameManager instance
     {
@@ -21,9 +26,16 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (playerHealth < 0)
+        {
+            playerHealth = 3;
+            Debug.Log("health not set, default to 3");
+        }
+
         this.fixedDeltaTime = Time.fixedDeltaTime;
 
-        minion = GameObject.FindGameObjectWithTag("Enemy");
+        enemy = GameObject.FindGameObjectWithTag("Enemy");
+        playerAnim = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
 
         if (instance)
         {
@@ -39,7 +51,10 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (!enemy)
+        {
+            enemy = GameObject.FindGameObjectWithTag("Enemy");
+        }
     }
 
     //Main Manager Functions
@@ -55,6 +70,11 @@ public class GameManager : MonoBehaviour
 
     public void PlayerDeath()
     {
+        playerAnim.SetBool("isDead", true);
+    }
+
+    public void PlayerFinishedDeath()
+    {
         SceneManager.LoadScene("DeathScene");
     }
 
@@ -67,8 +87,8 @@ public class GameManager : MonoBehaviour
 #endif
     }
 
-    public void MinionDeath()
+    public void enemyFinishedDeath()
     {
-        Destroy(minion);
+        Destroy(enemy, 3f);
     }
 }

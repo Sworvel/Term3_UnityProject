@@ -7,42 +7,60 @@ public class Minion : MonoBehaviour
 {
     GameObject player;
     NavMeshAgent enemy;
-    MeshRenderer mr;
+    SpawnPoint sp;
+    Animator anim;
 
     float angle = 15;
 
-    void Start()
-    {
-        player = GameObject.FindGameObjectWithTag("Player");
-        enemy = GetComponentInParent<NavMeshAgent>();
-        mr = GetComponentInParent<MeshRenderer>();
-    }
-
     void Update()
     {
+        if(!player)
+        player = GameObject.FindGameObjectWithTag("Player");
+
+        if(!enemy)
+        enemy = GetComponent<NavMeshAgent>();
+
+        if(!sp)
+        sp = GetComponent<SpawnPoint>();
+
+        if(!anim)
+        anim = GetComponent<Animator>();
+
         if (player != null && Vector3.Angle(player.transform.forward, transform.position - player.transform.position) < angle)
         {
-            mr.enabled = false;
             enemy.isStopped = true;
-            enemy.destination = player.transform.position;
+            anim.SetBool("isWalking", false);
         }
         else
         {
-            mr.enabled = true;
             enemy.isStopped = false;
+            anim.SetBool("isWalking", true);
         }
+        enemy.destination = player.transform.position;
     }
 
     private void OnTriggerEnter(Collider collision)
     {
         if(collision.gameObject.tag == "Player")
         {
-            GameManager.instance.PlayerDeath();
+            anim.SetBool("isAttacking", true);
+            GameManager.instance.playerHealth--;
+            GameManager.instance.enemyFinishedDeath();
         }
 
         if(collision.gameObject.tag == "PlayerProjectile")
         {
-            Destroy(transform.parent.gameObject);
+            anim.SetBool("isDead", true);
+            GameManager.instance.enemyFinishedDeath();
+            sp.spawnEnemy();
+        }
+    }
+
+    private void OnTriggerExit(Collider collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            anim.SetBool("isAttacking", false);
         }
     }
 

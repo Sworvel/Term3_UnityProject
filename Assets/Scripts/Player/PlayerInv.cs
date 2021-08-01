@@ -5,17 +5,19 @@ using UnityEngine;
 public class PlayerInv : MonoBehaviour
 {
     ItemScript itemScript;
+    SingleLinkedList sl;
 
-    LinkedList<GameObject> pickup = new LinkedList<GameObject>();
+    public GameObject Ball, Key, Axe;
 
-    public GameObject Ball;
-    public GameObject Key;
-    public GameObject Axe;
+    bool hasBall = false, hasKey = false, hasAxe = false, isempty = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        itemScript = GameObject.FindGameObjectWithTag("Player").GetComponent<ItemScript>();
+        itemScript = GetComponent<ItemScript>();
+        sl = GetComponent<SingleLinkedList>();
+
+        GameObject[] items = { Ball, Key, Axe };
     }
 
     // Update is called once per frame
@@ -24,27 +26,8 @@ public class PlayerInv : MonoBehaviour
 
     }
 
-    public void pickupItem()
+    /*public void pickupItem(GameObject item)
     {
-        if (pickup.Count > 0)
-        {
-            LinkedListNode<GameObject> Last;
-            Last = pickup.First;
-
-            switch (Last.Value.tag)
-            {
-                case "Ball":
-
-                    break;
-
-                case "Key":
-
-                    break;
-
-                case "Axe":
-
-                    break;
-            }
-        }
-    }
+       
+    }*/
 }

@@ -8,6 +8,9 @@ public class ItemScript : MonoBehaviour
     Animator anim;
     PlayerInv playerInv;
     SphereCollider sc;
+    SingleLinkedList sl;
+
+    GameObject Key, Axe, Ball;
 
     public enum ItemType
     {
@@ -29,6 +32,10 @@ public class ItemScript : MonoBehaviour
         anim = GetComponent<Animator>();
         playerInv = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInv>();
         sc = GetComponentInChildren<SphereCollider>();
+        Key = GameObject.FindGameObjectWithTag("Key");
+        Ball = GameObject.FindGameObjectWithTag("Ball");
+        Axe = GameObject.FindGameObjectWithTag("Axe");
+        sl = GetComponent<SingleLinkedList>();
     }
 
     // Update is called once per frame
@@ -44,12 +51,14 @@ public class ItemScript : MonoBehaviour
             switch (currentItem)
             {
                 case ItemType.Key:
-                    playerInv.pickupItem();
+                    //playerInv.pickupItem(Key);
+                    GameManager.instance.hasKey = true;
                     destroymr();
                     break;
 
                 case ItemType.Ball:
-                    playerInv.pickupItem();
+                    GameManager.instance.hasBall = true;
+                    //playerInv.pickupItem(Ball);
                     destroymr();
                     break;
 
@@ -69,7 +78,8 @@ public class ItemScript : MonoBehaviour
                     break;
 
                 case ItemType.Axe:
-                    playerInv.pickupItem();
+                    //playerInv.pickupItem(Axe);
+                    GameManager.instance.hasAxe = true;
                     destroymr();
                     break;
 

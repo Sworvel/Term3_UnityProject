@@ -8,6 +8,7 @@ public class CanvasManager : MonoBehaviour
 {
     [Header("Buttons")]
     public Button QuitButton;
+    public Button QuitButton2;
     public Button ResumeButton;
     public Button lvlOneButton;
     public Button lvlTwoButton;
@@ -47,11 +48,10 @@ public class CanvasManager : MonoBehaviour
         {
             endText.transform.LookAt(Camera.main.transform);
         }
-
-        /*if (Input.GetButtonDown("Cancel"))
+        if (QuitButton2)
         {
-            ShowPauseMenu();
-        }*/
+            QuitButton2.onClick.AddListener(() => GameManager.instance.QuitGame());
+        }
     }
 
     //Show Menu on Collision

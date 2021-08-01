@@ -6,6 +6,8 @@ using System;
 public class PlayerMovement : MonoBehaviour
 {
     CharacterController controller;
+    PlayerMeele playerMeele;
+    Animator anim;
 
     [Header("Player Settings")]
     [Space(2)]
@@ -36,6 +38,8 @@ public class PlayerMovement : MonoBehaviour
         try
         {
             controller = GetComponent<CharacterController>();
+            anim = GetComponent<Animator>();
+            playerMeele = GetComponentInChildren<PlayerMeele>();
 
             controller.minMoveDistance = 0.0f;
 
@@ -94,58 +98,55 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        switch (type)
+        if (GameManager.instance.playerHealth > 0)
         {
-            case ControllerType.SimpleMove:
-
-                controller.SimpleMove(transform.forward * Input.GetAxis("Vertical") * speed);
-
-                break;
-
-            case ControllerType.Move:
-
-                if(controller.isGrounded)
-                {
-                    moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                    
-                    moveDirection *= speed;
-                    
-                    moveDirection = transform.TransformDirection(moveDirection);
-
-                    if (Input.GetButtonDown("Jump"))
-                        moveDirection.y = jumpSpeed;
-                }
-
-                moveDirection.y -= gravity * Time.deltaTime;
-
-                controller.Move(moveDirection * Time.deltaTime);
-
-                break;
-        }
-
-       /* RaycastHit hit;
-
-        if (!thingToLookFrom)
-        {
-            Debug.DrawRay(transform.position, transform.forward * lookAtDistance, Color.red);
-
-            if (Physics.Raycast(transform.position, transform.forward, out hit, lookAtDistance))
+            switch (type)
             {
-                Debug.Log("Raycast hit: " + hit.transform.name);
+                case ControllerType.SimpleMove:
+
+                    controller.SimpleMove(transform.forward * Input.GetAxis("Vertical") * speed);
+
+                    break;
+
+                case ControllerType.Move:
+
+                    if (controller.isGrounded)
+                    {
+                        anim.SetBool("isGrounded", true);
+                        moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+                        moveDirection *= speed;
+
+                        moveDirection = transform.TransformDirection(moveDirection);
+
+                        if (Input.GetButtonDown("Jump"))
+                        {
+                            moveDirection.y = jumpSpeed;
+                            anim.SetBool("isJumping", true);
+                        }
+                    }
+
+                    if (!controller.isGrounded)
+                        anim.SetBool("isGrounded", false);
+
+                    if (controller.velocity.x != 0 || controller.velocity.z != 0)
+                    {
+                        anim.SetBool("isMoving", true);
+                    }
+                    else
+                    {
+                            anim.SetBool("isMoving", false);
+                    }
+
+                    moveDirection.y -= gravity * Time.deltaTime;
+
+                    controller.Move(moveDirection * Time.deltaTime);
+
+                    break;
             }
         }
-        else
-        {
-            Debug.DrawRay(thingToLookFrom.transform.position, thingToLookFrom.transform.forward * lookAtDistance, Color.blue);
-
-            if (Physics.Raycast(thingToLookFrom.transform.position, thingToLookFrom.transform.forward, out hit, lookAtDistance))
-            {
-                if(hit.transform.name == "Minion" && Input.GetButtonDown("Fire1"))
-                {
-                    GameManager.instance.MinionDeath();
-                }
-            }
-        }*/
+        else if (GameManager.instance.playerHealth <= 0)
+            GameManager.instance.PlayerDeath();
 
         if (Input.GetButtonDown("Fire1"))
         {
@@ -154,10 +155,26 @@ public class PlayerMovement : MonoBehaviour
                 GameObject temp = Instantiate(projectilePrefab, projectileSpawnPoint.transform.position, projectileSpawnPoint.transform.rotation);
 
                 temp.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0, 0, projectileForce));
+                anim.SetBool("isShooting", true);
 
                 Destroy(temp.gameObject, 2.0f);
             }
         }
+        if (Input.GetButtonDown("Fire2"))
+        {
+            anim.SetBool("isPunching", true);
+            if (playerMeele.inAttackRange == true)
+            {
+                GameManager.instance.enemyFinishedDeath();
+            }
+        }
+        else
+            anim.SetBool("isPunching", false);
+    }
+
+    public void finishedDeath()
+    {
+        GameManager.instance.PlayerFinishedDeath();
     }
 
     [ContextMenu("Reset Stats")]

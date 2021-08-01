@@ -4,32 +4,81 @@ using UnityEngine;
 
 public class SpawnPoint : MonoBehaviour
 {
-    //ItemScript itemScript;
+    public GameObject[] Fruit;
 
-    public GameObject[] spawnnedObject;
-    //public GameObject Axe;
+    public GameObject Ball, Axe, Enemy;
 
-    //public bool axeSpawn;
+    bool isSpawnned = false;
 
-    // Start is called before the first frame update
-    void Start()
+    public enum item
     {
-        //itemScript = GameObject.FindGameObjectWithTag("Player").GetComponent<ItemScript>();
-
-        //if (axeSpawn == false)
-        //{
-            Instantiate(spawnnedObject[Random.Range(0, 3)], transform.position, transform.rotation);
-        //}
+        Fruits,
+        Ball,
+        Axe,
+        Enemy,
     }
 
-    //void Update()
-    //{
-    //    if (axeSpawn == true)
-    //    {
-    //        if (itemScript.chestOpened == true)
-    //        {
-    //            Instantiate(Axe, transform.position, transform.rotation);
-    //        }
-    //    }
-    //}
+    public item spawnnedItem;
+
+    void Start()
+    {
+        switch (spawnnedItem)
+        {
+            case item.Fruits:
+                Instantiate(Fruit[Random.Range(0, 3)], transform.position, transform.rotation);
+                break;
+        }
+    }
+
+    void Update()
+    {
+        if (!isSpawnned)
+        {
+            if (GameManager.instance.hasKey == true)
+            {
+                switch (spawnnedItem)
+                {
+                    case item.Ball:
+                        if (Ball)
+                        {
+                            Instantiate(Ball, transform.position, transform.rotation);
+                            isSpawnned = true;
+                        }
+                        break;
+                }
+            }
+
+            if (GameManager.instance.hasBall == true)
+            {
+                switch (spawnnedItem)
+                {
+                    case item.Axe:
+                        if (Axe)
+                        {
+                            Instantiate(Axe, transform.position, transform.rotation);
+                            isSpawnned = true;
+                        }
+                        break;
+                }
+            }
+        }
+
+        if (GameObject.FindGameObjectWithTag("Enemy") == null)
+        {
+            spawnEnemy();
+        }
+    }
+
+    public void spawnEnemy()
+    {
+        switch (spawnnedItem)
+        {
+             case item.Enemy:
+                if (Enemy)
+                {
+                    Instantiate(Enemy, transform.position, transform.rotation);
+                }
+                  break;
+        }
+    }
 }

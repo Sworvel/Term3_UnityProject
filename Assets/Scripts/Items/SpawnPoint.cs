@@ -6,7 +6,7 @@ public class SpawnPoint : MonoBehaviour
 {
     public GameObject[] Fruit;
 
-    public GameObject Ball, Axe, Enemy;
+    public GameObject Ball, Axe, Enemy, player;
 
     bool isSpawnned = false;
 
@@ -32,35 +32,42 @@ public class SpawnPoint : MonoBehaviour
 
     void Update()
     {
-        if (!isSpawnned)
+        if (player)
         {
-            if (GameManager.instance.hasKey == true)
+            if (!isSpawnned)
             {
-                switch (spawnnedItem)
+                if (GameManager.instance.hasKey == true)
                 {
-                    case item.Ball:
-                        if (Ball)
-                        {
-                            Instantiate(Ball, transform.position, transform.rotation);
-                            isSpawnned = true;
-                        }
-                        break;
+                    switch (spawnnedItem)
+                    {
+                        case item.Ball:
+                            if (Ball)
+                            {
+                                Instantiate(Ball, transform.position, transform.rotation);
+                                isSpawnned = true;
+                            }
+                            break;
+                    }
                 }
-            }
 
-            if (GameManager.instance.hasBall == true)
-            {
-                switch (spawnnedItem)
+                if (GameManager.instance.hasBall == true)
                 {
-                    case item.Axe:
-                        if (Axe)
-                        {
-                            Instantiate(Axe, transform.position, transform.rotation);
-                            isSpawnned = true;
-                        }
-                        break;
+                    switch (spawnnedItem)
+                    {
+                        case item.Axe:
+                            if (Axe)
+                            {
+                                Instantiate(Axe, transform.position, transform.rotation);
+                                isSpawnned = true;
+                            }
+                            break;
+                    }
                 }
             }
+        }
+        else
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
         }
 
         if (GameObject.FindGameObjectWithTag("Enemy") == null)

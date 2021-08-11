@@ -44,9 +44,12 @@ public class CanvasManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (endText)
+        if (Camera.main)
         {
-            endText.transform.LookAt(Camera.main.transform);
+            if (endText)
+            {
+                endText.transform.LookAt(Camera.main.transform);
+            }
         }
         if (QuitButton2)
         {
@@ -63,7 +66,7 @@ public class CanvasManager : MonoBehaviour
         }
     }
 
-    void ShowPauseMenu()
+    public void ShowPauseMenu()
     {
         PauseMenu.SetActive(true);
         Time.timeScale = 0;

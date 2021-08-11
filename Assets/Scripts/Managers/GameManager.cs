@@ -10,8 +10,11 @@ public class GameManager : MonoBehaviour
 
     static GameManager _instance = null;
 
-    GameObject enemy;
-    Animator playerAnim;
+    private GameObject enemy;
+    private Animator playerAnim;
+    public GameObject player;
+    CanvasManager cm;
+    public Transform playerSpawn;
 
     public bool hasKey = false, hasBall = false, hasAxe = false;
 
@@ -36,6 +39,7 @@ public class GameManager : MonoBehaviour
 
         enemy = GameObject.FindGameObjectWithTag("Enemy");
         playerAnim = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
+        cm = GameObject.FindGameObjectWithTag("EndSpace").GetComponent<CanvasManager>();
 
         if (instance)
         {
@@ -54,6 +58,22 @@ public class GameManager : MonoBehaviour
         if (!enemy)
         {
             enemy = GameObject.FindGameObjectWithTag("Enemy");
+        }
+
+        if(SceneManager.GetActiveScene().name == "SceneOne")
+        {
+            /*if (!player)
+            {
+                if (playerSpawn)
+                {
+                    SpawnPlayer(playerSpawn);
+                    _setPlayerAnim();
+                }
+            }*/
+            if (Input.GetButtonDown("Cancel"))
+            {
+                cm.ShowPauseMenu();
+            }
         }
     }
 
@@ -78,6 +98,11 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("DeathScene");
     }
 
+   /* public void SpawnPlayer(Transform spawnlocation)
+    {
+        Instantiate(player, spawnlocation.position, spawnlocation.rotation);
+    }*/
+
     public void QuitGame()
     {
 #if UNITY_EDITOR
@@ -91,4 +116,10 @@ public class GameManager : MonoBehaviour
     {
         Destroy(enemy, 3f);
     }
+
+    /*void _setPlayerAnim()
+    {
+        if(player)
+            playerAnim = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
+    }*/
 }

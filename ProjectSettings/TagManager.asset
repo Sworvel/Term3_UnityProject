@@ -12,6 +12,7 @@ TagManager:
   - Enemy
   - PlayerProjectile
   - minionSpawn
+  - EndSpace
   layers:
   - Default
   - TransparentFX

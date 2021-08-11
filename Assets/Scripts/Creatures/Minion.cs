@@ -36,7 +36,8 @@ public class Minion : MonoBehaviour
             enemy.isStopped = false;
             anim.SetBool("isWalking", true);
         }
-        enemy.destination = player.transform.position;
+        if(player)
+            enemy.destination = player.transform.position;
     }
 
     private void OnTriggerEnter(Collider collision)

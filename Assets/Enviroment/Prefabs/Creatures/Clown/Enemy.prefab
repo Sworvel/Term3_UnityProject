@@ -14,6 +14,23 @@ CapsuleCollider:
   m_Height: 2.786148
   m_Direction: 1
   m_Center: {x: 0, y: 0.89307404, z: 0.11175537}
+--- !u!114 &6646593685860658389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8529045679817139881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a498dbaac17771f45a2bc2be6c0f8635, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  points:
+  - {fileID: 2254677977294866162, guid: 3ce87e47a89d60a41a6de6296bbd7f6e, type: 3}
+  - {fileID: 3002368708895475498, guid: b3058ee18b8b511448881de79db1639d, type: 3}
+  - {fileID: 614277809675191261, guid: a00c9d69447350f41b2548e1574f00c1, type: 3}
+  agroRange: 10
 --- !u!195 &7034817306687219762
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -36,22 +53,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 7
   m_ObstacleAvoidanceType: 4
---- !u!114 &6646593685860658389
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8529045679817139881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a498dbaac17771f45a2bc2be6c0f8635, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  points:
-  - {fileID: 0}
-  - {fileID: 0}
-  agroRange: 0
 --- !u!1001 &8834980594667068408
 PrefabInstance:
   m_ObjectHideFlags: 0

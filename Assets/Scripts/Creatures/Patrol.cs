@@ -13,17 +13,19 @@ public class Patrol : MonoBehaviour
     private NavMeshAgent enemy;
     private GameObject player;
     private Animator anim;
+    private bool enemyIsDead;
 
     void Start()
     {
         enemy = GetComponent<NavMeshAgent>();
         player = GameObject.FindGameObjectWithTag("Player");
         anim = GetComponent<Animator>();
+        enemyIsDead = false;
 
         /*if (pointLength > 0)
             pointLength = 0;*/
 
-        if(agroRange <= 0)
+        if (agroRange <= 0)
         {
             agroRange = 10;
             Debug.Log("Agro Range 0, set to 10");
@@ -35,8 +37,6 @@ public class Patrol : MonoBehaviour
         }*/
 
         // Disabling auto-braking allows for continuous movement
-        // between points (ie, the enemy doesn't slow down as it
-        // approaches a destination point).
         enemy.autoBraking = false;
 
         GotoNextPoint();
@@ -45,48 +45,49 @@ public class Patrol : MonoBehaviour
 
     void GotoNextPoint()
     {
-        // Returns if no points have been set up
         if (points.Length == 0)
         {
-           
+            anim.SetBool("isWalking", false);
         }
 
-        // Set the enemy to go to the currently selected destination.
         enemy.destination = points[destPoint].position;
 
-        // Choose the next point in the array as the destination,
-        // cycling to the start if necessary.
+        // Choose the next point in the array as the destination
         destPoint = (destPoint + 1) % points.Length;
     }
 
 
     void Update()
     {
-        // Choose the next destination point when the enemy gets
-        // close to the current one.
-        if (!enemy.pathPending && enemy.remainingDistance < 0.5f)
-            GotoNextPoint();
-
-        if (enemy.speed > 0)
-            anim.SetBool("isWalking", true);
-        else
-            anim.SetBool("isWalking", false);
-
-        if (player)
+        if (enemyIsDead == false)
         {
-            float distance = Vector2.Distance(transform.position, player.transform.position);
-            if (distance <= agroRange)
-            {
-                //enemy.isStopped = false;
-                //anim.SetBool("isWalking", true);
-                enemy.destination = player.transform.position;
-            }
+            if (!enemy.pathPending && enemy.remainingDistance < 0.5f)
+                GotoNextPoint();
+
+            if (enemy.speed > 0)
+                anim.SetBool("isWalking", true);
             else
+                anim.SetBool("isWalking", false);
+
+            if (player)
             {
-                //enemy.isStopped = true;
-                //anim.SetBool("isWalking", false);
-                enemy.destination = points[destPoint].position;
+                float distance = Vector2.Distance(transform.position, player.transform.position);
+                if (distance <= agroRange)
+                {
+                    enemy.destination = player.transform.position;
+                }
+                else
+                {
+                    enemy.destination = points[destPoint].position;
+                }
             }
+        }
+        else if(enemyIsDead == true)
+        {
+            enemy.Stop();
+            anim.SetBool("isWalking", false);
+            anim.SetBool("isDead", true);
+            GameManager.instance.enemyFinishedDeath();
         }
     }
 
@@ -100,11 +101,15 @@ public class Patrol : MonoBehaviour
 
         if (collision.gameObject.tag == "PlayerProjectile")
         {
-            anim.SetBool("isDead", true);
-            GameManager.instance.enemyFinishedDeath();
-            //sp.spawnEnemy();
+            enemyIsDead = true;
         }
     }
+
+    /*private void _enemyDeath()
+    {
+        anim.SetBool("isDead", true);
+        GameManager.instance.enemyFinishedDeath();
+    }*/
 
     private void OnTriggerExit(Collider collision)
     {
